@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import json
+import base64
 import scrapy
 from scrapy import Request
 
@@ -18,10 +18,10 @@ class ProxyList(scrapy.Spider):
 
         list = response.xpath('//div[@class="table-wrap"]//ul')
         for item in list:
-            proxy = item.xpath('.//li[@class="proxy"]/*[not(self::script)]/text()').extract()
+            proxy = item.xpath('.//li[@class="proxy"]//script').extract()[0]
+            proxy = base64.b64decode(proxy.split("'")[1])
             print(proxy)
             protocol = item.xpath('.//li[@class="https"]/text()').extract()
             protocol = 'http' if len(protocol) > 0 else 'https'
             print(protocol)
-
 
